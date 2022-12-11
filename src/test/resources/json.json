@@ -1,0 +1,66 @@
+{
+  "jcr:primaryType":"nt:unstructured",
+  "conf": {
+    "weather": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "slingPipes/container",
+      "conf": {
+        "jcr:primaryType": "sling:Folder",
+        "selector": {
+          "sling:resourceType": "slingPipes/dummySearch",
+          "conf": {
+            "jcr:primaryType": "nt:unstructured",
+            "paris": {
+              "jcr:primaryType": "nt:unstructured",
+              "city": "paris",
+              "country": "fr"
+            },
+            "bucharest": {
+              "jcr:primaryType": "nt:unstructured",
+              "city": "bucharest",
+              "country": "ro"
+            }
+          }
+        },
+        "weather": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "slingPipes/json",
+          "raw": true,
+          "expr": "{'query':{'ro':{'city':'Bucharest','temp':'12°'}, 'fr':{'city':'Paris','temp':'13°'}}}"
+        },
+        "write": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "slingPipes/write",
+          "path":"/content/json/windSpeed",
+          "conf": {
+            "${weather.get('query').get(selector.country).get('city')}":"${weather.get('query').get(selector.country).get('temp')}"
+          }
+        }
+      }
+    },
+    "array": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "slingPipes/container",
+      "conf": {
+        "jcr:primaryType": "sling:Folder",
+        "json": {
+          "sling:resourceType": "slingPipes/json",
+          "expr": "[{\"path\":\"one\"},{\"path\":\"two\"},{\"path\":\"three\"}]"
+        },
+        "user": {
+          "sling:resourceType": "slingPipes/base",
+          "path":"/content/json/array/${json.path}"
+        }
+      }
+    }
+  },
+  "windSpeed":{
+    "jcr:primaryType": "nt:unstructured"
+  },
+  "array": {
+    "jcr:primaryType": "nt:unstructured",
+    "one": { "jcr:primaryType": "nt:unstructured"},
+    "two": { "jcr:primaryType": "nt:unstructured"},
+    "three": { "jcr:primaryType": "nt:unstructured"}
+  }
+}
